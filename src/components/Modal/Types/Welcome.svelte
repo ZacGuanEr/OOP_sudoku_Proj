@@ -21,7 +21,6 @@
 		} else {
 			startNew(difficulty);
 		}
-
 		hideModal();
 	}
 </script>
