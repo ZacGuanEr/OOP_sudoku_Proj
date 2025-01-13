@@ -3,6 +3,8 @@
 	import { fade } from 'svelte/transition';
 	import { SUDOKU_SIZE } from '@sudoku/constants';
 	import { cursor } from '@sudoku/stores/cursor';
+	import { userGrid} from '@sudoku/stores/grid'
+    import { hints, hintCells } from '@sudoku/stores/hints';
 
 	export let value;
 	export let cellX;
@@ -15,11 +17,35 @@
 	export let selected;
 	export let sameArea;
 	export let sameNumber;
+	export let isHintGridNumber; // 是否是采用hint计算出的新格子
 
 	const borderRight = (cellX !== SUDOKU_SIZE && cellX % 3 !== 0);
 	const borderRightBold = (cellX !== SUDOKU_SIZE && cellX % 3 === 0);
 	const borderBottom = (cellY !== SUDOKU_SIZE && cellY % 3 !== 0);
 	const borderBottomBold = (cellY !== SUDOKU_SIZE && cellY % 3 === 0);
+
+
+	
+	function click2input(x, y, input_num) {
+		cursor.set(x, y)
+		const key = y + ',' + x
+		// 如果当前点击的是候选值的格子
+		if ($hintCells.hasOwnProperty(key)){
+			const candidateValue =  $hintCells[key]['candidate'];
+			// 仅限单候选值的格子允许双击事件
+			if (candidateValue.length <= 1) {
+				userGrid.set($cursor, input_num[0]);
+				// hintCells.updateOneCells(key, input_num) // 先删掉该候选值
+				hintCells.updateAllHintCells($userGrid, $hints);
+				hintCells.delete(x, y);
+				hintCells.checkAndUpdate($userGrid, $hints); // 检查当hintCells=0时说明当前页面已经没有候选值了，需要继续求解新的候选值
+				// userGrid.updateNothing();
+				console.log('双击, update grid', $hintCells);
+			} 
+		}
+		
+	}
+
 </script>
 
 <div class="cell row-start-{cellY} col-start-{cellX}"
@@ -28,15 +54,17 @@
      class:border-b={borderBottom}
      class:border-b-4={borderBottomBold}>
 
-	{#if !disabled}
+	{#if !disabled }
 		<div class="cell-inner"
 		     class:user-number={userNumber}
 		     class:selected={selected}
 		     class:same-area={sameArea}
 		     class:same-number={sameNumber}
-		     class:conflicting-number={conflictingNumber}>
+		     class:conflicting-number={conflictingNumber}
+			 class:ishintgrid-number={isHintGridNumber}>
 
-			<button class="cell-btn" on:click={cursor.set(cellX - 1, cellY - 1)}>
+			 <!-- <button class="cell-btn" on:click={cursor.set(cellX - 1, cellY - 1)}> -->
+			<button class="cell-btn" on:click={cursor.set(cellX - 1, cellY - 1)} on:dblclick={() => click2input(cellX - 1, cellY - 1, value)}>
 				{#if candidates}
 					<Candidates {candidates} />
 				{:else}
@@ -119,4 +147,9 @@
 	.conflicting-number {
 		@apply text-red-600;
 	}
+
+	.ishintgrid-number {
+		@apply bg-green-400 text-white;
+	}
+
 </style>

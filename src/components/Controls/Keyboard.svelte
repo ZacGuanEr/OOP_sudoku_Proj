@@ -1,13 +1,15 @@
 <script>
 	import { userGrid } from '@sudoku/stores/grid';
+	import { hints,hintCells } from '@sudoku/stores/hints';
 	import { cursor } from '@sudoku/stores/cursor';
 	import { notes } from '@sudoku/stores/notes';
 	import { candidates } from '@sudoku/stores/candidates';
 
 	// TODO: Improve keyboardDisabled
-	import { keyboardDisabled } from '@sudoku/stores/keyboard';
+	import { keyboardDisabled, candidatesNumDisable } from '@sudoku/stores/keyboard';
 
 	function handleKeyButton(num) {
+		console.log('handleKeyButton', num)
 		if (!$keyboardDisabled) {
 			if ($notes) {
 				if (num === 0) {
@@ -17,11 +19,24 @@
 				}
 				userGrid.set($cursor, 0);
 			} else {
-				if ($candidates.hasOwnProperty($cursor.x + ',' + $cursor.y)) {
-					candidates.clear($cursor);
-				}
+				// 重点改这里
+
+				// if ($candidates.hasOwnProperty($cursor.x + ',' + $cursor.y)) {
+				// 	candidates.clear($cursor);
+				// }
 
 				userGrid.set($cursor, num);
+				// 用户从下方键盘输入而并非双击Cell时，也应该更新hintCells
+				const key = $cursor.y + ',' + $cursor.x
+				if ($hintCells.hasOwnProperty(key)){
+					hintCells.updateOneCells(key, num) // 先删掉该候选值
+					hintCells.updateAllHintCells($userGrid, $hints);
+					hintCells.delete($cursor.x, $cursor.y);
+					hintCells.checkAndUpdate($userGrid, $hints);
+					// 粗暴做法，一旦输入，我就清空原本的候选值结果，重新求解
+					console.log('用户从下方键盘输入, update grid', $hintCells)
+					
+				}
 			}
 		}
 	}
@@ -86,13 +101,14 @@
 				</svg>
 			</button>
 		{:else}
-			<button class="btn btn-key" disabled={$keyboardDisabled} title="Insert {keyNum + 1}" on:click={() => handleKeyButton(keyNum + 1)}>
+			<button class="btn btn-key" disabled={$keyboardDisabled || $candidatesNumDisable.isCandateNum(keyNum + 1)} title="Insert {keyNum + 1}" on:click={() => handleKeyButton(keyNum + 1)}>
 				{keyNum + 1}
 			</button>
 		{/if}
 	{/each}
 
 </div>
+
 
 <style>
 	.keyboard-grid {

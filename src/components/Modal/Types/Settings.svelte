@@ -46,6 +46,11 @@
 			<input bind:value={settings.hints} class="number-input" id="hints" name="hints" type="number" min="0" max="81" />
 		</div>
 	{/if}
+	<div transition:slide class="inline-flex items-center">
+		<label for="hintsLevel" class="flex-grow text-lg">Min hint level at each step</label>
+
+		<input bind:value={settings.hintsLevel} class="number-input" id="hints" name="hints" type="number" min="1" max="3" />
+	</div>
 
 	<Switch bind:checked={settings.highlightCells} text="Highlight cells in same row/column/box" id="highlight-cells" />
 	<Switch bind:checked={settings.highlightSame} text="Highlight cells with the same number" id="highlight-matching" />
