@@ -3,7 +3,7 @@
 	import { validateSencode } from '@sudoku/sencode';
 	import game from '@sudoku/game';
 	import { modal } from '@sudoku/stores/modal';
-	import { gameWon } from '@sudoku/stores/game';
+	import { gameWon, gameLose } from '@sudoku/stores/game';
 	import Board from './components/Board/index.svelte';
 	import Controls from './components/Controls/index.svelte';
 	import Header from './components/Header/index.svelte';
@@ -15,6 +15,13 @@
 			modal.show('gameover');
 		}
 	});
+
+	gameLose.subscribe(lose => {
+		if (lose) {
+			game.pause();
+			modal.show('gamelose');
+		}
+	})
 
 	onMount(() => {
 		let hash = location.hash;

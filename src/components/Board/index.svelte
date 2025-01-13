@@ -2,6 +2,7 @@
 	import { BOX_SIZE } from '@sudoku/constants';
 	import { gamePaused } from '@sudoku/stores/game';
 	import { grid, userGrid, invalidCells } from '@sudoku/stores/grid';
+	import { hintCells } from '@sudoku/stores/hints';
 	import { settings } from '@sudoku/stores/settings';
 	import { cursor } from '@sudoku/stores/cursor';
 	import { candidates } from '@sudoku/stores/candidates';
@@ -27,6 +28,31 @@
 
 		return gridStore[cursorStore.y][cursorStore.x];
 	}
+
+	function ishintCell(hintCells, x, y){
+		const key = x + ',' + y;
+		// const existingEntry = hintCells.find(entry => entry.key === key);
+		if (hintCells.hasOwnProperty(key)){
+			if (hintCells[key]['candidate'].length === 0){
+				delete hintCells[key];
+				return false;
+			}
+			return true;
+		}
+		return false;
+	}
+
+	// 如果原本有值或者有候选值，则显示
+	function visualCellValue(value, x, y){
+		const key = y + ',' + x;
+		if ($hintCells.hasOwnProperty(key)){
+			const candidatevalue =  $hintCells[key]['candidate'];
+			// console.log(key, candidatevalue)
+			return candidatevalue;
+		}
+		return value;
+	}
+
 </script>
 
 <div class="board-padding relative z-10">
@@ -39,7 +65,7 @@
 
 			{#each $userGrid as row, y}
 				{#each row as value, x}
-					<Cell {value}
+					<Cell value={visualCellValue(value, x, y)}
 					      cellY={y + 1}
 					      cellX={x + 1}
 					      candidates={$candidates[x + ',' + y]}
@@ -48,7 +74,8 @@
 					      userNumber={$grid[y][x] === 0}
 					      sameArea={$settings.highlightCells && !isSelected($cursor, x, y) && isSameArea($cursor, x, y)}
 					      sameNumber={$settings.highlightSame && value && !isSelected($cursor, x, y) && getValueAtCursor($userGrid, $cursor) === value}
-					      conflictingNumber={$settings.highlightConflicting && $grid[y][x] === 0 && $invalidCells.includes(x + ',' + y)} />
+					      conflictingNumber={$settings.highlightConflicting && $grid[y][x] === 0 && $invalidCells.includes(x + ',' + y)}
+						  isHintGridNumber={ishintCell($hintCells, y, x) && !isSelected($cursor, x, y)} />
 				{/each}
 			{/each}
 
