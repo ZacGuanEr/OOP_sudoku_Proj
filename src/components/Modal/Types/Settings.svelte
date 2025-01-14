@@ -4,7 +4,7 @@
 	import { settings as settingsStore } from '@sudoku/stores/settings';
 	import { MAX_HINTS } from '@sudoku/constants';
 
-	export let data = {};
+	export const data = {};
 	export let hideModal;
 
 	let settings = { ...$settingsStore };
