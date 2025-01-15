@@ -29,7 +29,10 @@
 			undoRedoManager.pushLastHintState({
                         grid: newGrid,
                     });
-			userGrid.applyHint($cursor, $hints);
+			// userGrid.applyHint($cursor, $hints);
+			console.log('in action.js', $userGrid);
+			hintCells.applyHint($userGrid, $hints);
+			userGrid.updateNothing();
 		}
 		undoRedoManager.isLastHintStateEmptyFunc();
 		undoRedoManager.isRedoEmptyFunc();
