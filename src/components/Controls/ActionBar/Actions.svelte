@@ -1,7 +1,7 @@
 <script>
 	import { userGrid } from "@sudoku/stores/grid";
 	import { cursor } from "@sudoku/stores/cursor";
-	import { hints, hintCells } from "@sudoku/stores/hints";
+	import { hints, hintCells, hintName } from "@sudoku/stores/hints";
 	import { settings } from "@sudoku/stores/settings";
 	import { hintDisabled } from "@sudoku/stores/keyboard";
 	import { gamePaused } from "@sudoku/stores/game";
@@ -29,8 +29,6 @@
 			undoRedoManager.pushLastHintState({
                         grid: newGrid,
                     });
-			// userGrid.applyHint($cursor, $hints);
-			console.log('in action.js', $userGrid);
 			hintCells.applyHint($userGrid, $hints);
 			userGrid.updateNothing();
 		}

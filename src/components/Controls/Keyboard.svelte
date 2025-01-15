@@ -1,6 +1,6 @@
 <script>
 	import { userGrid } from '@sudoku/stores/grid';
-	import { hints,hintCells } from '@sudoku/stores/hints';
+	import { hints,hintCells,hintName } from '@sudoku/stores/hints';
 	import { cursor } from '@sudoku/stores/cursor';
 	import { notes } from '@sudoku/stores/notes';
 	import { candidates } from '@sudoku/stores/candidates';
@@ -30,7 +30,7 @@
 				const key = $cursor.y + ',' + $cursor.x
 				if ($hintCells.hasOwnProperty(key)){
 					hintCells.updateOneCells(key, num) // 先删掉该候选值
-					hintCells.updateAllHintCells($userGrid, $hints);
+					hintCells.updateAllHintCells($userGrid, $hints, $hintName);
 					hintCells.delete($cursor.x, $cursor.y);
 					hintCells.checkAndUpdate($userGrid, $hints);
 					// 粗暴做法，一旦输入，我就清空原本的候选值结果，重新求解

@@ -4,7 +4,7 @@
 	import { SUDOKU_SIZE } from '@sudoku/constants';
 	import { cursor } from '@sudoku/stores/cursor';
 	import { userGrid} from '@sudoku/stores/grid'
-    import { hints, hintCells } from '@sudoku/stores/hints';
+    import { hints, hintCells, hintName } from '@sudoku/stores/hints';
 
 	export let value;
 	export let cellX;
@@ -36,7 +36,7 @@
 			if (candidateValue.length <= 1) {
 				userGrid.set($cursor, input_num[0]);
 				// hintCells.updateOneCells(key, input_num) // 先删掉该候选值
-				hintCells.updateAllHintCells($userGrid, $hints);
+				hintCells.updateAllHintCells($userGrid, $hints, $hintName);
 				hintCells.delete(x, y);
 				hintCells.checkAndUpdate($userGrid, $hints); // 检查当hintCells=0时说明当前页面已经没有候选值了，需要继续求解新的候选值
 				// userGrid.updateNothing();
