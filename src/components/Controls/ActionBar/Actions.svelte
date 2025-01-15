@@ -49,6 +49,7 @@
 	function returnToLastHintState() {
 		hintCells.clear();
 		hints.reset();
+		cursor.reset();
 		userGrid.returnHintAll();
 		undoRedoManager.clearUndo();
 		undoRedoManager.isUndoEmptyFunc();
