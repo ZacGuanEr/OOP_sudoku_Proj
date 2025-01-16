@@ -56,7 +56,9 @@
 		undoRedoManager.isUndoEmptyFunc();
 		hints.useHint();
 		if ($hints !== 0) {
-			userGrid.applyHint($cursor, $hints);
+			hintCells.applyHint($userGrid, $hints);
+			userGrid.updateNothing();
+			hints.reset();
 		}
 	}
 </script>

@@ -4,6 +4,7 @@
 	import { cursor } from '@sudoku/stores/cursor';
 	import { notes } from '@sudoku/stores/notes';
 	import { candidates } from '@sudoku/stores/candidates';
+	import {undoRedoManager} from '@sudoku/stores/unredomanager';
 
 	// TODO: Improve keyboardDisabled
 	import { keyboardDisabled, candidatesNumDisable } from '@sudoku/stores/keyboard';
@@ -39,6 +40,10 @@
 				}
 			}
 		}
+		undoRedoManager.isUndoEmptyFunc();
+		undoRedoManager.isRedoEmptyFunc();
+		undoRedoManager.isLastHintStateEmptyFunc();
+
 	}
 
 	function handleKey(e) {
